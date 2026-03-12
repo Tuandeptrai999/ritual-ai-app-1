@@ -12,8 +12,67 @@ export const ChatPage: React.FC = () => {
   const [messages, setMessages] = useState<ChatMessageType[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [conversationId, setConversationId] = useState<string | null>(null);
+  const [conversations, setConversations] = useState<any[]>([]);
 
   const { login, authenticated, getAccessToken, ready } = usePrivy();
+
+  const fetchConversations = async () => {
+      try {
+          const token = await getAccessToken();
+          if (!token) return;
+          const res = await fetch(`${import.meta.env.VITE_API_WORKER}/api/conversations`, {
+              headers: { "Authorization": `Bearer ${token}` }
+          });
+          if (res.ok) {
+              const data = await res.json();
+              setConversations(data);
+          }
+      } catch(e) {}
+  };
+
+  React.useEffect(() => {
+    if (ready && authenticated) {
+        fetchConversations();
+    }
+  }, [ready, authenticated]);
+
+  const handleSelectConversation = async (id: string) => {
+      setConversationId(id);
+      setIsLoading(true);
+      try {
+          const token = await getAccessToken();
+          const res = await fetch(`${import.meta.env.VITE_API_WORKER}/api/conversations/${id}`, {
+              headers: { "Authorization": `Bearer ${token}` }
+          });
+          if (res.ok) {
+              const data = await res.json();
+              const mapped = data.messages.map((m: any) => {
+                  let text = m.content;
+                  let img = undefined;
+                  if (m.role === 'user' && text.startsWith('{')) {
+                      try {
+                          const parsed = JSON.parse(text);
+                          text = parsed.text || text;
+                          img = parsed.image;
+                      } catch(e) {}
+                  }
+                  return {
+                      id: m.id,
+                      message: text,
+                      sender: m.role,
+                      imageBase64: img
+                  };
+              });
+              setMessages(mapped);
+          }
+      } catch (e) {}
+      setIsLoading(false);
+  };
+
+  const handleNewChat = () => {
+      setConversationId(null);
+      setMessages([]);
+  };
 
   const handleSendMessage = async (text: string, imageBase64?: string) => {
     if (!ready) return;
@@ -54,7 +113,10 @@ export const ChatPage: React.FC = () => {
 
       const data = await response.json();
       
-      if (data.conversationId) setConversationId(data.conversationId);
+      if (data.conversationId && conversationId !== data.conversationId) {
+          setConversationId(data.conversationId);
+          fetchConversations(); // refresh the list
+      }
       
       const newBotMsg: ChatMessageType = {
         id: Date.now().toString(),
@@ -79,7 +141,12 @@ export const ChatPage: React.FC = () => {
   return (
     <ThemeProvider>
       <div className="flex h-screen bg-[var(--bg-primary)] transition-colors duration-700 overflow-hidden">
-        <Sidebar aria-label="Global System Control" />
+        <Sidebar 
+            conversations={conversations}
+            activeConversationId={conversationId}
+            onSelectConversation={handleSelectConversation}
+            onNewChat={handleNewChat}
+        />
         <div className="flex-1 flex flex-col min-w-0 bg-transparent relative overflow-hidden">
           {/* Alchemist Background Effects */}
           <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-[#8B5CF6]/5 blur-[160px] rounded-full -mr-96 -mt-96 animate-pulse-violet pointer-events-none"></div>

@@ -1,7 +1,19 @@
 import React from 'react';
-import { Database, Cpu, Search, ShieldCheck, Zap } from 'lucide-react';
+import { Database, Cpu, Search, ShieldCheck, Zap, MessageSquare, Plus } from 'lucide-react';
 
-export const Sidebar: React.FC = () => {
+interface SidebarProps {
+    conversations?: any[];
+    onSelectConversation?: (id: string) => void;
+    activeConversationId?: string | null;
+    onNewChat?: () => void;
+}
+
+export const Sidebar: React.FC<SidebarProps> = ({ 
+    conversations = [], 
+    onSelectConversation = () => {}, 
+    activeConversationId = null, 
+    onNewChat = () => {} 
+}) => {
     return (
         <div className="hidden md:flex w-[260px] h-full flex-col py-10 px-6 shrink-0 transition-all duration-500 relative overflow-hidden bg-[var(--bg-secondary)] border-r border-[var(--border-color)] shadow-2xl">
             {/* Background elements */}
@@ -53,8 +65,42 @@ export const Sidebar: React.FC = () => {
                 </div>
             </div>
 
-            {/* Modules List */}
+            {/* Modules List & History */}
             <div className="flex-1 space-y-8 relative z-10 overflow-y-auto custom-scrollbar pr-2">
+                <div>
+                    <div className="flex items-center justify-between mb-4 px-2">
+                        <h3 className="text-[9px] text-[var(--text-secondary)] font-black tracking-[0.3em] uppercase opacity-60">History</h3>
+                        <button 
+                            onClick={onNewChat}
+                            className="bg-brand-violet/10 text-brand-violet hover:bg-brand-violet hover:text-white rounded-lg p-1.5 transition-all"
+                            title="New Conversation"
+                        >
+                            <Plus className="w-3.5 h-3.5" />
+                        </button>
+                    </div>
+                    
+                    <div className="space-y-1 mb-8">
+                        {conversations.length === 0 ? (
+                            <div className="text-[11px] text-[var(--text-secondary)] italic px-3 py-2 opacity-50">No recent rituals.</div>
+                        ) : (
+                            conversations.map(c => (
+                                <div 
+                                    key={c.id}
+                                    onClick={() => onSelectConversation(c.id)}
+                                    className={`flex items-center gap-3 py-3 px-4 rounded-xl transition-all duration-300 cursor-pointer group hover:bg-black/5 dark:hover:bg-white/5 ${activeConversationId === c.id ? 'bg-black/5 dark:bg-white/5 border border-[var(--border-color)] shadow-md' : ''}`}
+                                >
+                                    <div className={`w-8 h-8 shrink-0 rounded-lg flex items-center justify-center transition-all ${activeConversationId === c.id ? 'bg-brand-violet text-white shadow-[0_0_15px_rgba(139,92,246,0.3)]' : 'bg-black/5 dark:bg-white/5 text-[var(--text-secondary)] group-hover:text-brand-cyan'}`}>
+                                        <MessageSquare className="w-4 h-4" />
+                                    </div>
+                                    <span className={`text-[12px] font-bold tracking-tight truncate transition-colors ${activeConversationId === c.id ? 'text-[var(--text-primary)]' : 'text-[var(--text-secondary)] group-hover:text-[var(--text-primary)]'}`}>
+                                        {c.title || "New Conversation"}
+                                    </span>
+                                </div>
+                            ))
+                        )}
+                    </div>
+                </div>
+
                 <div>
                     <h3 className="text-[9px] text-[var(--text-secondary)] font-black tracking-[0.3em] uppercase mb-4 px-2 opacity-60">Core Modules</h3>
                     <div className="space-y-1">
