@@ -21,19 +21,15 @@ export async function rateLimitMiddleware(request: Request, env: Env): Promise<R
         }
     }
 
-    // Settings for endpoint limits
+    // Settings for endpoint limits (User request: 25 requests per 30 minutes)
     let ipRule: RateLimitRule | null = null;
     let userRule: RateLimitRule | null = null;
+    const GLOBAL_LIMIT = 25;
+    const GLOBAL_WINDOW = 30 * 60; // 1800 seconds
 
-    if (url.pathname.startsWith("/api/chat")) {
-        ipRule = { limit: 20, windowSeconds: 60 }; // 20 requests per minute per IP
-        if (userId) userRule = { limit: 100, windowSeconds: 3600 }; // 100 requests per hour per user
-    } else if (url.pathname.startsWith("/api/conversations")) {
-        ipRule = { limit: 30, windowSeconds: 60 }; // 30 requests per minute
-    } else if (url.pathname.startsWith("/api/data/")) {
-        ipRule = { limit: 60, windowSeconds: 60 }; // 60 requests per minute
-    } else if (url.pathname.startsWith("/api/auth") || url.pathname.startsWith("/auth")) {
-        ipRule = { limit: 10, windowSeconds: 60 }; // 10 requests per minute
+    if (url.pathname.startsWith("/api/")) {
+        ipRule = { limit: GLOBAL_LIMIT, windowSeconds: GLOBAL_WINDOW };
+        if (userId) userRule = { limit: GLOBAL_LIMIT, windowSeconds: GLOBAL_WINDOW };
     }
 
     // No limit required for this route
