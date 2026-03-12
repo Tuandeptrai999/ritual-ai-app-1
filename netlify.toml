@@ -3,6 +3,10 @@
   publish = "dist"
   command = "npm install && npm run build"
 
+[build.environment]
+  VITE_API_WORKER = "https://api-worker.tuantuan280296.workers.dev"
+  VITE_PRIVY_APP_ID = "cmmmmt7j201360di5kizm69cv"
+
 [[redirects]]
   from = "/*"
   to = "/index.html"
