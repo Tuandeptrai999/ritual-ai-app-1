@@ -60,7 +60,8 @@ export const ChatPage: React.FC = () => {
                       id: m.id,
                       message: text,
                       sender: m.role,
-                      imageBase64: img
+                      imageBase64: img,
+                      isNew: false
                   };
               });
               setMessages(mapped);
@@ -85,7 +86,8 @@ export const ChatPage: React.FC = () => {
       id: Date.now().toString(),
       message: text,
       sender: "user",
-      imageBase64: imageBase64
+      imageBase64: imageBase64,
+      isNew: true
     };
 
     setMessages((prev) => [...prev, newUserMsg]);
@@ -121,7 +123,8 @@ export const ChatPage: React.FC = () => {
       const newBotMsg: ChatMessageType = {
         id: Date.now().toString(),
         message: data.message || "Sorry, I couldn't understand that.",
-        sender: "bot"
+        sender: "bot",
+        isNew: true
       };
       
       setMessages((prev) => [...prev, newBotMsg]);

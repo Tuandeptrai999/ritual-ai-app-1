@@ -8,11 +8,11 @@ interface ChatMessageProps {
 
 export const ChatMessage: React.FC<ChatMessageProps> = ({ message: msgObj }) => {
   const isUser = msgObj.sender === "user";
-  const [displayedText, setDisplayedText] = useState(isUser ? (msgObj.message || "") : "");
-  const [isTyping, setIsTyping] = useState(!isUser && !!msgObj.message);
+  const [displayedText, setDisplayedText] = useState(isUser || !msgObj.isNew ? (msgObj.message || "") : "");
+  const [isTyping, setIsTyping] = useState(!isUser && !!msgObj.isNew && !!msgObj.message);
 
   useEffect(() => {
-    if (!isUser && msgObj.message) {
+    if (!isUser && msgObj.isNew && msgObj.message) {
       setDisplayedText("");
       setIsTyping(true);
       let index = 0;
@@ -30,8 +30,11 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({ message: msgObj }) => 
       }, speed);
       
       return () => clearInterval(timer);
+    } else if (!isUser && !msgObj.isNew) {
+      setDisplayedText(msgObj.message || "");
+      setIsTyping(false);
     }
-  }, [msgObj.message, isUser]);
+  }, [msgObj.message, isUser, msgObj.isNew]);
 
   return (
     <div className={`flex w-full mb-10 animate-slide-right ${isUser ? "justify-end" : "justify-start"}`}>

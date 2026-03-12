@@ -5,4 +5,5 @@ export interface ChatMessageType {
   message: string;
   sender: Sender;
   imageBase64?: string;
+  isNew?: boolean;
 }
