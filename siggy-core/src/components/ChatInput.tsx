@@ -63,13 +63,13 @@ export const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, disabled = 
         {/* Glow border effect */}
         <div className="relative group p-[1px] rounded-[32px] bg-gradient-to-r from-brand-violet/20 via-[var(--border-color)] to-brand-cyan/20 hover:from-brand-violet/40 hover:to-brand-cyan/40 transition-all duration-500 shadow-xl hover:shadow-brand-violet/5">
             <div className="relative bg-[var(--bg-primary)] backdrop-blur-3xl rounded-[31px] flex items-center border border-[var(--border-color)]">
-                <div className="absolute left-6 text-[var(--text-secondary)] group-focus-within:text-brand-cyan transition-colors z-10">
-                    <Database className="w-5 h-5 animate-pulse" />
+                <div className="absolute left-4 md:left-6 text-[var(--text-secondary)] group-focus-within:text-brand-cyan transition-colors z-10">
+                    <Database className="w-4 h-4 md:w-5 md:h-5 animate-pulse" />
                 </div>
                 
-                <div className="flex-1 flex flex-col justify-center pl-16 pr-44 py-2 min-h-[72px]">
+                <div className="flex-1 flex flex-col justify-center pl-12 md:pl-16 pr-24 md:pr-44 py-2 min-h-[64px] md:min-h-[72px]">
                     {imageBase64 && (
-                        <div className="relative inline-block w-16 h-16 mb-2 mt-2">
+                        <div className="relative inline-block w-12 h-12 md:w-16 md:h-16 mb-2 mt-2">
                             <img src={imageBase64} alt="Upload preview" className="w-full h-full object-cover rounded-lg border border-[var(--border-color)]" />
                             <button 
                                 type="button" 
@@ -84,13 +84,13 @@ export const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, disabled = 
                       type="text"
                       value={inputValue}
                       onChange={(e) => setInputValue(e.target.value)}
-                      placeholder={imageBase64 ? "Add a description..." : "Transmit signal to protocol..."}
+                      placeholder={imageBase64 ? "Add details..." : "Transmit signal..."}
                       disabled={disabled}
-                      className="w-full bg-transparent focus:outline-none text-[var(--text-primary)] font-bold text-xl placeholder-slate-400 dark:placeholder-slate-600 tracking-tight"
+                      className="w-full bg-transparent focus:outline-none text-[var(--text-primary)] font-bold text-lg md:text-xl placeholder-slate-400 dark:placeholder-slate-600 tracking-tight"
                     />
                 </div>
                 
-                <div className="absolute right-4 flex items-center gap-3">
+                <div className="absolute right-2 md:right-4 flex items-center gap-1 md:gap-3">
                     <input 
                         type="file" 
                         accept="image/*" 
@@ -102,7 +102,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, disabled = 
                         type="button"
                         onClick={handleImageOpen}
                         disabled={disabled}
-                        className="p-3 text-[var(--text-secondary)] hover:text-brand-cyan hover:bg-brand-cyan/10 rounded-xl transition-colors disabled:opacity-30"
+                        className="p-2 md:p-3 text-[var(--text-secondary)] hover:text-brand-cyan hover:bg-brand-cyan/10 rounded-xl transition-colors disabled:opacity-30"
                         title="Attach image"
                     >
                         <ImagePlus className="w-5 h-5" />
@@ -110,9 +110,9 @@ export const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, disabled = 
                     <button
                       type="submit"
                       disabled={disabled || (!inputValue.trim() && !imageBase64)}
-                      className="group relative px-6 h-12 bg-brand-violet text-white hover:bg-brand-violet/90 rounded-xl flex items-center justify-center transition-all duration-300 active:scale-90 shadow-lg disabled:opacity-30"
+                      className="group relative px-4 md:px-6 h-10 md:h-12 bg-brand-violet text-white hover:bg-brand-violet/90 rounded-xl flex items-center justify-center transition-all duration-300 active:scale-90 shadow-lg disabled:opacity-30"
                     >
-                      <span className="font-black tracking-widest text-[11px] mr-2">SEND</span>
+                      <span className="hidden sm:inline font-black tracking-widest text-[11px] mr-2">SEND</span>
                       <Send className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                     </button>
                 </div>
