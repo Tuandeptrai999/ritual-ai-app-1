@@ -1,5 +1,5 @@
 import React from 'react';
-import { Database, Cpu, Search, Lightbulb, Edit3, ShieldCheck, Zap } from 'lucide-react';
+import { Database, Cpu, Search, ShieldCheck, Zap } from 'lucide-react';
 
 export const Sidebar: React.FC = () => {
     return (

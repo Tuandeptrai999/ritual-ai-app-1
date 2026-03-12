@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTheme } from '../contexts/ThemeContext';
-import { LogOut, ArrowRightCircle, Moon, Sun, Shield } from 'lucide-react';
+import { LogOut, ArrowRightCircle, Moon, Sun } from 'lucide-react';
 import { usePrivy } from '@privy-io/react-auth';
 
 export const Header: React.FC = () => {
