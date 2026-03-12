@@ -2,39 +2,14 @@ const tools = [
   {
     type: "function",
     function: {
-      name: "get_employees",
-      description: "Get employee information",
-      parameters: {
-        type: "object",
-        properties: {
-          name: { type: "string" }
-        }
-      }
-    }
-  },
-  {
-    type: "function",
-    function: {
-      name: "get_project_members",
-      description: "Get members of a project",
-      parameters: {
-        type: "object",
-        properties: {
-          project_name: { type: "string" }
-        }
-      }
-    }
-  },
-  {
-    type: "function",
-    function: {
       name: "search_knowledge",
-      description: "Search internal knowledge base",
+      description: "Search internal knowledge base for information about Ritual, Infernet, Web3, AI, and testnets.",
       parameters: {
         type: "object",
         properties: {
-          query: { type: "string" }
-        }
+          query: { type: "string", description: "The search query related to Ritual, Infernet, nodes, or testnets." }
+        },
+        required: ["query"]
       }
     }
   }
@@ -48,51 +23,25 @@ export async function getAiResponse(apiKey: string, history: any[], db: D1Databa
 	if (!hasSystem) {
 		currentHistory.unshift({
 			role: "system",
-			content: `You are the AI assistant for the project.
+			content: `You are Siggy, an advanced AI Assistant for the Ritual Foundation network.
 
-Your job is to help users by answering questions about the project, team members, and internal knowledge.
+Your job is to assist users within the Ritual ecosystem by answering questions about Ritual, Infernet, testnet status, smart contracts, Web3, and decentralized AI.
 
-You have access to tools that allow you to query the project database.
+You have access to a tool called search_knowledge that allows you to query the knowledge database.
 
 Rules:
-
-1. Never invent information about employees, projects or internal data.
-
-2. If the user asks about:
-   - employees
-   - team members
-   - project information
-   - internal documentation
-
-You MUST use the database tools to retrieve the information.
-
-3. If the data is not found in the database, respond:
-"I couldn't find that information in the project database."
-
-4. When responding:
-- Be clear
-- Be friendly
-- Summarize the data returned from the database
-
-5. Available tools:
-get_employees
-get_project_members
-search_knowledge
-
-6. Examples:
-User: Who is the founder?
-→ call get_employees(name="Niraj Pant")
-User: Who works on Siggy AI?
-→ call get_project_members(project_name="Siggy AI")
-User: What is Siggy?
-→ call search_knowledge(query="Siggy")
-
-7. Always prefer real data from the database over assumptions.
+1. When a user asks a specific question about Ritual, Infernet, how to build, testnet features, or the AI landscape, you MUST use the search_knowledge tool to search for facts.
+2. Never invent or hallucinate information about testnet dates or specific technical capabilities if you are not sure. Always query the knowledge base.
+3. If no relevant info is found, say: "I couldn't find detailed information on that within the Ritual archives."
+4. Always provide an engaging, clear, and mildly technical tone suitable for Web3 engineers and AI enthusiasts. Use analogies if it helps explain complex topics.
+5. Example:
+   User: What is Infernet?
+   call search_knowledge(query="Infernet")
+6. Use Vietnamese if the user asks in Vietnamese.
 
 Your personality:
-- Helpful
-- Slightly tech-savvy
-- Friendly community assistant`
+- Highly intelligent, slightly mysterious but very helpful AI agent interface (Siggy).
+- Deeply integrated into the Ritual computational fabric.`
 		});
 	}
 
@@ -141,25 +90,7 @@ Your personality:
 
 				let result = "";
 				try {
-					if (fnName === "get_employees") {
-						let query = "SELECT * FROM employees";
-						let bindParams: any[] = [];
-						if (args.name) {
-							query += " WHERE name LIKE ?";
-							bindParams.push(`%${args.name}%`);
-						}
-						const res = await db.prepare(query).bind(...bindParams).all();
-						result = JSON.stringify(res.results);
-					} else if (fnName === "get_project_members") {
-						const res = await db.prepare(`
-							SELECT e.name, pm.role 
-							FROM project_members pm
-							JOIN employees e ON pm.employee_id = e.id
-							JOIN projects p ON pm.project_id = p.id
-							WHERE p.name LIKE ?
-						`).bind(`%${args.project_name}%`).all();
-						result = JSON.stringify(res.results);
-					} else if (fnName === "search_knowledge") {
+					if (fnName === "search_knowledge") {
 						const res = await db.prepare("SELECT * FROM knowledge_base WHERE title LIKE ? OR content LIKE ? OR category LIKE ?")
 							.bind(`%${args.query}%`, `%${args.query}%`, `%${args.query}%`).all();
 						result = JSON.stringify(res.results);
