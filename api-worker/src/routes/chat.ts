@@ -32,10 +32,32 @@ export async function handleChatRoutes(request: Request, env: Env): Promise<Resp
 		conversationId = await createConversation(env.DB, user.id, title);
 	}
 
-	await saveMessage(env.DB, conversationId, "user", body.message);
+	let contentToSave = body.message;
+	if (body.image) {
+		contentToSave = JSON.stringify({ text: body.message, image: body.image });
+	}
+	await saveMessage(env.DB, conversationId, "user", contentToSave);
 
     const historyResult = await env.DB.prepare("SELECT role, content FROM messages WHERE conversation_id = ? ORDER BY created_at ASC").bind(conversationId).all();
-    const history = historyResult.results.map((r: any) => ({ role: r.role, content: r.content }));
+    const history = historyResult.results.map((r: any) => {
+        let content = r.content;
+        if (r.role === "user" && content.startsWith("{")) {
+            try {
+                const parsed = JSON.parse(content);
+                if (parsed.image) {
+                    content = [
+                        { type: "text", text: parsed.text },
+                        { type: "image_url", image_url: { url: parsed.image } }
+                    ];
+                } else if (parsed.text) {
+                    content = parsed.text;
+                }
+            } catch (e) {
+                // Ignore parsing errors, fallback to raw content
+            }
+        }
+        return { role: r.role, content: content };
+    });
 
 	const aiResponseText = await getAiResponse(env.LLM_API_KEY, history, env.DB);
 

@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { Send, Github, Database } from "lucide-react";
+import { Send, Github, Database, ImagePlus, X } from "lucide-react";
 
 interface ChatInputProps {
-  onSendMessage: (message: string) => void;
+  onSendMessage: (message: string, imageBase64?: string) => void;
   disabled?: boolean;
 }
 
@@ -20,12 +20,40 @@ const XIcon = () => (
 
 export const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, disabled = false }) => {
   const [inputValue, setInputValue] = useState("");
+  const [imageBase64, setImageBase64] = useState<string | undefined>();
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
+
+  const handleImageOpen = () => {
+    if (fileInputRef.current) {
+        fileInputRef.current.click();
+    }
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            setImageBase64(reader.result as string);
+        };
+        reader.readAsDataURL(file);
+    }
+    // reset input
+    if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+    }
+  };
+
+  const removeImage = () => {
+      setImageBase64(undefined);
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (inputValue.trim() && !disabled) {
-      onSendMessage(inputValue.trim());
+    if ((inputValue.trim() || imageBase64) && !disabled) {
+      onSendMessage(inputValue.trim(), imageBase64);
       setInputValue("");
+      setImageBase64(undefined);
     }
   };
 
@@ -35,24 +63,54 @@ export const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, disabled = 
         {/* Glow border effect */}
         <div className="relative group p-[1px] rounded-[32px] bg-gradient-to-r from-brand-violet/20 via-[var(--border-color)] to-brand-cyan/20 hover:from-brand-violet/40 hover:to-brand-cyan/40 transition-all duration-500 shadow-xl hover:shadow-brand-violet/5">
             <div className="relative bg-[var(--bg-primary)] backdrop-blur-3xl rounded-[31px] flex items-center border border-[var(--border-color)]">
-                <div className="absolute left-6 text-[var(--text-secondary)] group-focus-within:text-brand-cyan transition-colors">
+                <div className="absolute left-6 text-[var(--text-secondary)] group-focus-within:text-brand-cyan transition-colors z-10">
                     <Database className="w-5 h-5 animate-pulse" />
                 </div>
                 
-                <input
-                  type="text"
-                  value={inputValue}
-                  onChange={(e) => setInputValue(e.target.value)}
-                  placeholder="Transmit signal to protocol..."
-                  disabled={disabled}
-                  className="w-full pl-16 pr-36 py-7 bg-transparent focus:outline-none text-[var(--text-primary)] font-bold text-xl placeholder-slate-400 dark:placeholder-slate-600 tracking-tight"
-                />
+                <div className="flex-1 flex flex-col justify-center pl-16 pr-44 py-2 min-h-[72px]">
+                    {imageBase64 && (
+                        <div className="relative inline-block w-16 h-16 mb-2 mt-2">
+                            <img src={imageBase64} alt="Upload preview" className="w-full h-full object-cover rounded-lg border border-[var(--border-color)]" />
+                            <button 
+                                type="button" 
+                                onClick={removeImage} 
+                                className="absolute -top-2 -right-2 bg-slate-800 text-white rounded-full p-1 shadow-md hover:bg-slate-700 hover:scale-110 transition-transform"
+                            >
+                                <X className="w-3 h-3" />
+                            </button>
+                        </div>
+                    )}
+                    <input
+                      type="text"
+                      value={inputValue}
+                      onChange={(e) => setInputValue(e.target.value)}
+                      placeholder={imageBase64 ? "Add a description..." : "Transmit signal to protocol..."}
+                      disabled={disabled}
+                      className="w-full bg-transparent focus:outline-none text-[var(--text-primary)] font-bold text-xl placeholder-slate-400 dark:placeholder-slate-600 tracking-tight"
+                    />
+                </div>
                 
-                <div className="absolute right-4 flex items-center gap-4">
+                <div className="absolute right-4 flex items-center gap-3">
+                    <input 
+                        type="file" 
+                        accept="image/*" 
+                        ref={fileInputRef} 
+                        onChange={handleFileChange} 
+                        className="hidden" 
+                    />
+                    <button
+                        type="button"
+                        onClick={handleImageOpen}
+                        disabled={disabled}
+                        className="p-3 text-[var(--text-secondary)] hover:text-brand-cyan hover:bg-brand-cyan/10 rounded-xl transition-colors disabled:opacity-30"
+                        title="Attach image"
+                    >
+                        <ImagePlus className="w-5 h-5" />
+                    </button>
                     <button
                       type="submit"
-                      disabled={disabled || !inputValue.trim()}
-                      className="group relative px-8 h-14 bg-brand-violet text-white hover:bg-brand-violet/90 rounded-2xl flex items-center justify-center transition-all duration-500 active:scale-90 shadow-lg disabled:opacity-30"
+                      disabled={disabled || (!inputValue.trim() && !imageBase64)}
+                      className="group relative px-6 h-12 bg-brand-violet text-white hover:bg-brand-violet/90 rounded-xl flex items-center justify-center transition-all duration-300 active:scale-90 shadow-lg disabled:opacity-30"
                     >
                       <span className="font-black tracking-widest text-[11px] mr-2">SEND</span>
                       <Send className="w-4 h-4 group-hover:translate-x-1 transition-transform" />

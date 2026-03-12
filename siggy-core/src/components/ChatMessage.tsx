@@ -63,6 +63,13 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({ message: msgObj }) => 
               : "bg-[var(--card-bg)] text-[var(--text-primary)] border-[var(--border-color)] shadow-black/5 rounded-tl-none backdrop-blur-xl dark:shadow-black/20"}
           `}>
              <div className="relative z-10 whitespace-pre-wrap font-mono text-[14px]">
+                {msgObj.imageBase64 && (
+                    <img 
+                        src={msgObj.imageBase64} 
+                        alt="User uploaded" 
+                        className="max-w-xs md:max-w-sm rounded-xl mb-3 object-cover shadow-md"
+                    />
+                )}
                 {displayedText || (isTyping ? "" : msgObj.message)}
                 {!isUser && isTyping && (
                     <span className="inline-block w-2 h-4 bg-brand-cyan ml-1 animate-pulse"></span>

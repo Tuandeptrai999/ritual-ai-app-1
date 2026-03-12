@@ -15,7 +15,7 @@ export const ChatPage: React.FC = () => {
 
   const { login, authenticated, getAccessToken, ready } = usePrivy();
 
-  const handleSendMessage = async (text: string) => {
+  const handleSendMessage = async (text: string, imageBase64?: string) => {
     if (!ready) return;
     
     if (!authenticated) {
@@ -25,7 +25,8 @@ export const ChatPage: React.FC = () => {
     const newUserMsg: ChatMessageType = {
       id: Date.now().toString(),
       message: text,
-      sender: "user"
+      sender: "user",
+      imageBase64: imageBase64
     };
 
     setMessages((prev) => [...prev, newUserMsg]);
@@ -39,7 +40,7 @@ export const ChatPage: React.FC = () => {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${token}`
         },
-        body: JSON.stringify({ message: text, conversationId })
+        body: JSON.stringify({ message: text, image: imageBase64, conversationId })
       });
 
       if (!response.ok) {
