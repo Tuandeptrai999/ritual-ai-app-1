@@ -1,0 +1,118 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+@import "tailwindcss";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme {
+  --color-brand-cyan: #00F5FF;
+  --color-brand-violet: #8B5CF6;
+  --color-brand-pink: #EC4899;
+}
+
+:root {
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --bg-primary: #FFFFFF;
+  --bg-secondary: #F8FAFC;
+  --text-primary: #0F172A;
+  --text-secondary: #64748B;
+  --accent-primary: #8B5CF6;
+  --accent-secondary: #00F5FF;
+  --card-bg: rgba(255, 255, 255, 0.8);
+  --border-color: rgba(0, 0, 0, 0.05);
+  --glass-bg: rgba(255, 255, 255, 0.7);
+}
+
+.dark {
+  --bg-primary: #050505;
+  --bg-secondary: #0C0C14;
+  --text-primary: #FFFFFF;
+  --text-secondary: #94A3B8;
+  --accent-primary: #8B5CF6;
+  --accent-secondary: #00F5FF;
+  --card-bg: rgba(12, 12, 20, 0.8);
+  --border-color: rgba(255, 255, 255, 0.08);
+  --glass-bg: rgba(12, 12, 20, 0.6);
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  @apply transition-colors duration-700 overflow-x-hidden selection:bg-brand-violet/30;
+}
+
+/* Premium Alchemy Glass */
+.glass {
+  @apply bg-[#FFFFFF]/5 backdrop-blur-[24px] border border-white/10;
+}
+
+.glass-dark {
+  @apply bg-[#0C0C14]/60 backdrop-blur-[32px] border border-white/5;
+}
+
+.glass-cyan {
+  @apply bg-[#00F5FF]/10 backdrop-blur-xl border border-[#00F5FF]/20;
+}
+
+/* Custom Scrollbar - Minimalist */
+::-webkit-scrollbar {
+  width: 4px;
+}
+::-webkit-scrollbar-track {
+  background: transparent; 
+}
+::-webkit-scrollbar-thumb {
+  @apply bg-white/10 hover:bg-white/20; 
+  border-radius: 20px;
+}
+
+/* Modern Animations */
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotate(0); }
+  50% { transform: translateY(-12px) rotate(1deg); }
+}
+
+@keyframes pulse-glow-violet {
+  0%, 100% { box-shadow: 0 0 20px rgba(139, 92, 246, 0.1); }
+  50% { box-shadow: 0 0 50px rgba(139, 92, 246, 0.3); }
+}
+
+@keyframes slide-right {
+  from { opacity: 0; transform: translateX(-30px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-pulse-violet {
+  animation: pulse-glow-violet 4s ease-in-out infinite;
+}
+
+.animate-slide-right {
+  animation: slide-right 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Mystic Gradients */
+.text-mystic {
+  @apply bg-clip-text text-transparent bg-gradient-to-br from-[#00F5FF] via-[#8B5CF6] to-[#EC4899];
+}
+
+.bg-ritual-grad {
+  background: radial-gradient(circle at 50% 50%, rgba(139, 92, 246, 0.1) 0%, transparent 70%);
+}
+
+/* Brutalist Shadows/Borders */
+.border-alchemy {
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.5);
+}
+
+@keyframes scan {
+  from { top: 0; }
+  to { top: 100%; }
+}
+
+.animate-scan {
+  animation: scan 3s linear infinite;
+}
