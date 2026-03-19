@@ -61,7 +61,7 @@ Personality: Siggy Core. Mission: Provide the 'Best/Hay nhất' responses for ke
 
 	while (true) {
 		const payload = {
-			model: "gpt-5.2",
+			model: "claude-sonnet-4.5",
 			max_tokens: 1024,
 			messages: currentHistory,
 			tools: tools,

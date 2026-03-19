@@ -6,16 +6,18 @@ interface SidebarProps {
     onSelectConversation?: (id: string) => void;
     activeConversationId?: string | null;
     onNewChat?: () => void;
+    isMobileOpen?: boolean;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({ 
     conversations = [], 
     onSelectConversation = () => {}, 
     activeConversationId = null, 
-    onNewChat = () => {} 
+    onNewChat = () => {},
+    isMobileOpen = false
 }) => {
     return (
-        <div className="hidden md:flex w-[260px] h-full flex-col py-10 px-6 shrink-0 transition-all duration-500 relative overflow-hidden bg-[var(--bg-secondary)] border-r border-[var(--border-color)] shadow-2xl">
+        <div className={`fixed inset-y-0 left-0 z-50 transform ${isMobileOpen ? 'translate-x-0' : '-translate-x-full'} md:relative md:translate-x-0 flex w-[260px] h-full flex-col py-10 px-6 shrink-0 transition-transform duration-500 overflow-hidden bg-[var(--bg-secondary)] border-r border-[var(--border-color)] shadow-2xl`}>
             {/* Background elements */}
             <div className="absolute top-0 right-0 w-32 h-32 bg-brand-violet/10 blur-[60px] pointer-events-none opacity-50 dark:opacity-100"></div>
             

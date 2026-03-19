@@ -8,10 +8,10 @@ export const Header: React.FC = () => {
   const { login, logout, authenticated } = usePrivy();
   
   return (
-    <header className="h-24 flex items-center justify-between px-16 shrink-0 transition-all duration-500 z-50 relative pointer-events-none">
-      <div className="pointer-events-auto">
-        <h2 className="text-[14px] font-black text-gray-500 dark:text-white/40 tracking-[0.4em] uppercase flex items-center gap-3">
-            <span className="w-8 h-[1px] bg-gray-200 dark:bg-white/10"></span>
+    <header className="h-24 flex items-center justify-between px-4 sm:px-8 md:px-16 shrink-0 transition-all duration-500 z-50 relative pointer-events-none">
+      <div className="pointer-events-auto hidden md:block">
+        <h2 className="text-[12px] md:text-[14px] font-black text-gray-500 dark:text-white/40 tracking-[0.2em] md:tracking-[0.4em] uppercase flex items-center gap-3">
+            <span className="w-8 h-[1px] bg-gray-200 dark:bg-white/10 hidden sm:block"></span>
             LET THE RITUAL BEGIN 🕯️🕯️🕯️
         </h2>
       </div>

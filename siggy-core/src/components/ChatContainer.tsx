@@ -19,15 +19,15 @@ export const ChatContainer: React.FC<ChatContainerProps> = ({ messages, onSendMe
   return (
     <div className="flex-1 w-full overflow-y-auto px-4 md:px-12 py-10 custom-scrollbar relative">
       {/* Background Orbs */}
-      <div className="absolute top-1/4 -left-20 w-[400px] h-[400px] bg-brand-violet/5 blur-[120px] pointer-events-none rounded-full animate-pulse-violet opacity-60 dark:opacity-100"></div>
-      <div className="absolute bottom-1/4 -right-20 w-[400px] h-[400px] bg-brand-cyan/5 blur-[120px] pointer-events-none rounded-full animate-pulse-glow opacity-60 dark:opacity-100"></div>
+      <div className="absolute top-1/4 -left-20 w-[400px] h-[400px] bg-brand-violet/5 blur-3xl md:blur-[120px] pointer-events-none rounded-full animate-pulse-violet opacity-60 dark:opacity-100 hidden md:block"></div>
+      <div className="absolute bottom-1/4 -right-20 w-[400px] h-[400px] bg-brand-cyan/5 blur-3xl md:blur-[120px] pointer-events-none rounded-full animate-pulse-glow opacity-60 dark:opacity-100 hidden md:block"></div>
       
       {messages.length === 0 ? (
         <div className="flex flex-col items-center justify-center min-h-[70vh] max-w-4xl mx-auto relative z-10 animate-slide-up">
             {/* Main Visual */}
-            <div className="relative mb-16 group">
-                <div className="absolute inset-0 bg-gradient-to-tr from-brand-violet to-brand-cyan blur-[100px] opacity-10 group-hover:opacity-20 transition-opacity duration-1000 scale-150"></div>
-                <div className="relative p-2 rounded-[48px] bg-white dark:bg-[#0C0C14] shadow-2xl transition-transform duration-700 group-hover:scale-105 group-hover:rotate-2 border border-gray-100 dark:border-white/5">
+            <div className="relative mb-8 md:mb-16 group mx-auto flex justify-center">
+                <div className="absolute inset-0 bg-gradient-to-tr from-brand-violet to-brand-cyan blur-2xl md:blur-[100px] opacity-10 group-hover:opacity-20 transition-opacity duration-1000 scale-150"></div>
+                <div className="relative p-2 rounded-[32px] md:rounded-[48px] bg-white dark:bg-[#0C0C14] shadow-2xl transition-transform duration-700 group-hover:scale-105 group-hover:rotate-2 border border-gray-100 dark:border-white/5">
                     <video 
                       src="/VIDEO.MOV" 
                       autoPlay 

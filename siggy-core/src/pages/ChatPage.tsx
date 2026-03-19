@@ -5,6 +5,7 @@ import { ChatInput } from "../components/ChatInput";
 import { Sidebar } from "../components/Sidebar";
 import { ThemeProvider } from "../contexts/ThemeContext";
 import type { ChatMessageType } from "../types/chat";
+import { Menu } from "lucide-react";
 
 import { usePrivy } from '@privy-io/react-auth';
 
@@ -13,6 +14,7 @@ export const ChatPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [conversationId, setConversationId] = useState<string | null>(null);
   const [conversations, setConversations] = useState<any[]>([]);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const { login, authenticated, getAccessToken, ready } = usePrivy();
 
@@ -143,20 +145,43 @@ export const ChatPage: React.FC = () => {
 
   return (
     <ThemeProvider>
-      <div className="flex h-screen bg-[var(--bg-primary)] transition-colors duration-700 overflow-hidden">
+      <div className="flex h-[100dvh] bg-[var(--bg-primary)] transition-colors duration-700 overflow-hidden relative">
+        {/* Mobile Sidebar Overlay */}
+        {isSidebarOpen && (
+            <div 
+                className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 md:hidden animate-fade-in"
+                onClick={() => setIsSidebarOpen(false)}
+            />
+        )}
         <Sidebar 
             conversations={conversations}
             activeConversationId={conversationId}
-            onSelectConversation={handleSelectConversation}
-            onNewChat={handleNewChat}
+            onSelectConversation={(id) => {
+                handleSelectConversation(id);
+                setIsSidebarOpen(false);
+            }}
+            onNewChat={() => {
+                handleNewChat();
+                setIsSidebarOpen(false);
+            }}
+            isMobileOpen={isSidebarOpen}
         />
         <div className="flex-1 flex flex-col min-w-0 bg-transparent relative overflow-hidden">
           {/* Alchemist Background Effects */}
-          <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-[#8B5CF6]/5 blur-[160px] rounded-full -mr-96 -mt-96 animate-pulse-violet pointer-events-none"></div>
-          <div className="absolute bottom-0 left-1/4 w-[600px] h-[600px] bg-[#00F5FF]/5 blur-[140px] rounded-full animate-pulse-glow pointer-events-none delay-1000"></div>
+          <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-[#8B5CF6]/5 blur-3xl md:blur-[160px] rounded-full -mr-96 -mt-96 animate-pulse-violet pointer-events-none"></div>
+          <div className="absolute bottom-0 left-1/4 w-[600px] h-[600px] bg-[#00F5FF]/5 blur-3xl md:blur-[140px] rounded-full animate-pulse-glow pointer-events-none delay-1000"></div>
           
-          <Header />
-          <main className="flex-1 flex flex-col relative overflow-hidden z-10 w-full bg-ritual-grad">
+          <div className="flex items-center absolute top-0 left-0 w-full z-50 px-4 h-24 pointer-events-none">
+            <button 
+                className="md:hidden pointer-events-auto p-2 bg-white/5 border border-white/5 backdrop-blur-md rounded-xl text-[var(--text-primary)] hover:bg-white/10 z-50 mr-4"
+                onClick={() => setIsSidebarOpen(true)}
+            >
+                <Menu className="w-5 h-5" />
+            </button>
+            <div className="flex-1 w-full flex"><Header /></div>
+          </div>
+          
+          <main className="flex-1 flex flex-col relative overflow-hidden z-10 w-full bg-ritual-grad pt-16 md:pt-0">
             <ChatContainer messages={messages} onSendMessage={isLoading ? undefined : handleSendMessage} isLoading={isLoading} />
             <ChatInput onSendMessage={handleSendMessage} disabled={isLoading} />
           </main>
